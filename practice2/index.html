@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Java & Linux Terminal Simulator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0b1020;
+      color: #e5e5e5;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 1rem;
+      box-sizing: border-box;
+    }
+    .app {
+      width: 100%;
+      max-width: 960px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 0.25rem;
+    }
+    .subtitle {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #a0aec0;
+      margin-bottom: 1rem;
+    }
+    .terminal {
+      background: #050814;
+      border-radius: 0.75rem;
+      padding: 0.75rem;
+      box-shadow: 0 0 0 1px #1f2933;
+      display: flex;
+      flex-direction: column;
+      height: 480px;
+    }
+    .terminal-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .dots {
+      display: flex;
+      gap: 0.35rem;
+      margin-right: 0.5rem;
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+    }
+    .dot.red { background: #ff5f56; }
+    .dot.yellow { background: #ffbd2e; }
+    .dot.green { background: #27c93f; }
+    .title-bar {
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+    #output {
+      flex: 1;
+      overflow-y: auto;
+      font-family: "JetBrains Mono", "Fira Code", monospace;
+      font-size: 0.85rem;
+      line-height: 1.4;
+      padding-right: 0.25rem;
+      white-space: pre-wrap;
+    }
+    .prompt-line {
+      display: flex;
+      align-items: center;
+      margin-top: 0.25rem;
+      font-family: "JetBrains Mono", "Fira Code", monospace;
+      font-size: 0.9rem;
+    }
+    .prompt-label {
+      white-space: pre;
+      color: #34d399;
+    }
+    #cmdline {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #e5e5e5;
+      font: inherit;
+      padding: 0.15rem 0.35rem;
+    }
+    .help-panel {
+      margin-top: 1rem;
+      background: #050814;
+      border-radius: 0.75rem;
+      padding: 0.75rem 1rem;
+      box-shadow: 0 0 0 1px #1f2933;
+      font-size: 0.85rem;
+      color: #cbd5f5;
+    }
+    .help-panel code {
+      background: rgba(148, 163, 184, 0.15);
+      padding: 0.1rem 0.3rem;
+      border-radius: 0.25rem;
+      font-size: 0.8rem;
+    }
+    a {
+      color: #60a5fa;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <h1>Java &amp; Ubuntu Terminal Practice</h1>
+    <p class="subtitle">Simulated Ubuntu shell with basic <code>javac</code>/<code>java</code>, file commands, and nano/vi editing.</p>
+
+    <div class="terminal" onclick="document.getElementById('cmdline').focus()">
+      <div class="terminal-header">
+        <div class="dots">
+          <div class="dot red"></div>
+          <div class="dot yellow"></div>
+          <div class="dot green"></div>
+        </div>
+        <div class="title-bar">student@ubuntu: ~ — web terminal (simulated)</div>
+      </div>
+      <div id="output"></div>
+      <div class="prompt-line">
+        <span class="prompt-label" id="promptLabel">student@ubuntu:~$ </span>
+        <input id="cmdline" autocomplete="off" spellcheck="false" />
+      </div>
+    </div>
+
+    <section class="help-panel">
+      <strong>Supported commands (implemented in JavaScript):</strong>
+      <ul>
+        <li><code>help</code>, <code>clear</code></li>
+        <li>Navigation: <code>pwd</code>, <code>ls</code>, <code>cd</code>, <code>mkdir</code></li>
+        <li>Files: <code>touch</code>, <code>cat</code>, <code>rm</code>, <code>nano</code>, <code>vi</code></li>
+        <li>Java toolchain: <code>javac File.java</code>, <code>java ClassName</code></li>
+      </ul>
+      <p>
+        Example:
+        <code>nano HelloWorld.java</code>,
+        write a simple program with <code>System.out.println("Hello");</code>,
+        then run <code>javac HelloWorld.java</code> and finally <code>java HelloWorld</code>.
+      </p>
+      <p>
+        This is a learning simulator that runs fully in your browser (no real JVM or Linux kernel).
+        For full behavior, you can extend <code>terminal.js</code> as an assignment.
+      </p>
+    </section>
+  </div>
+
+  <script src="terminal.js"></script>
+</body>
+</html>
