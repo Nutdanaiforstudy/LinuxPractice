@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ITCS254 Linux Revision Lab</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+      color: #0f172a;
+      background: #0b1120;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(circle at top, #1e293b, #020617 55%);
+      color: #e5e7eb;
+    }
+    a { color: #7dd3fc; }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(18px);
+      background: linear-gradient(to right, rgba(15,23,42,0.95), rgba(15,23,42,0.8));
+      border-bottom: 1px solid rgba(148,163,184,0.25);
+    }
+    .nav-inner {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0.6rem 1rem;
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand {
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .brand span.logo {
+      width: 1.6rem;
+      height: 1.6rem;
+      border-radius: 0.9rem;
+      border: 1px solid rgba(56,189,248,0.7);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      background: radial-gradient(circle at 30% 0, #38bdf8, #0f172a);
+      box-shadow:
+        0 0 15px rgba(56,189,248,0.6),
+        0 0 45px rgba(8,47,73,0.8);
+    }
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      font-size: 0.85rem;
+    }
+    .nav-links a {
+      padding: 0.32rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      text-decoration: none;
+      color: #e5e7eb;
+      background: rgba(15,23,42,0.6);
+    }
+    .nav-links a:hover {
+      border-color: rgba(94,234,212,0.7);
+      background: radial-gradient(circle at top, rgba(45,212,191,0.18), rgba(15,23,42,0.9));
+    }
+    main {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 3rem;
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2.3fr);
+      gap: 1.8rem;
+    }
+    @media (max-width: 960px) {
+      main { grid-template-columns: minmax(0, 1fr); }
+    }
+    h1 {
+      font-size: clamp(1.8rem, 2.5vw, 2.3rem);
+      margin: 0 0 0.2rem;
+      letter-spacing: -.03em;
+    }
+    .subtitle {
+      font-size: 0.95rem;
+      color: #cbd5f5;
+      max-width: 36rem;
+    }
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin: 0.75rem 0 1.1rem;
+    }
+    .pill {
+      font-size: 0.78rem;
+      padding: 0.28rem 0.75rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.5);
+      background: linear-gradient(to right, rgba(15,23,42,0.95), rgba(15,23,42,0.7));
+      display: inline-flex;
+      gap: 0.4rem;
+      align-items: center;
+    }
+    .pill .dot {
+      width: 0.45rem;
+      height: 0.45rem;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 0, #22c55e, #166534);
+      box-shadow: 0 0 8px rgba(34,197,94,0.8);
+    }
+    .card {
+      border-radius: 1.1rem;
+      border: 1px solid rgba(148,163,184,0.45);
+      background: radial-gradient(circle at top left, rgba(59,130,246,0.16), rgba(15,23,42,0.92));
+      padding: 1.1rem 1.1rem 1.2rem;
+      box-shadow:
+        0 18px 45px rgba(15,23,42,0.85),
+        0 0 0 1px rgba(15,23,42,0.8) inset;
+    }
+    .card h2 {
+      font-size: 1.1rem;
+      margin-top: 0;
+      margin-bottom: 0.6rem;
+      letter-spacing: -.01em;
+    }
+    .section-title {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      color: #94a3b8;
+      margin-bottom: 0.4rem;
+    }
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin: 0.2rem 0 0.5rem;
+    }
+    .tag {
+      font-size: 0.73rem;
+      padding: 0.18rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.45);
+      background: rgba(15,23,42,0.9);
+      color: #e5e7eb;
+    }
+    .topics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 0.75rem;
+    }
+    .topic-chip {
+      border-radius: 0.9rem;
+      border: 1px solid rgba(148,163,184,0.5);
+      padding: 0.55rem 0.75rem;
+      font-size: 0.8rem;
+      background: linear-gradient(to right, rgba(15,23,42,0.95), rgba(15,23,42,0.8));
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .topic-chip span.label {
+      font-weight: 500;
+    }
+    .topic-chip span.meta {
+      font-size: 0.7rem;
+      color: #9ca3af;
+    }
+    /* MCQ styles */
+    #quiz-container {
+      margin-top: 0.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .question-card {
+      border-radius: 0.9rem;
+      border: 1px solid rgba(148,163,184,0.5);
+      padding: 0.8rem 0.9rem 0.8rem;
+      background: radial-gradient(circle at top left, rgba(45,212,191,0.08), rgba(15,23,42,0.96));
+    }
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.75rem;
+      align-items: baseline;
+    }
+    .question-header h3 {
+      margin: 0 0 0.35rem;
+      font-size: 0.95rem;
+    }
+    .question-topic {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: .16em;
+      color: #a5b4fc;
+    }
+    .answers {
+      display: grid;
+      gap: 0.35rem;
+      margin-top: 0.15rem;
+    }
+    .answer-option {
+      position: relative;
+      border-radius: 0.7rem;
+      border: 1px solid rgba(148,163,184,0.55);
+      padding: 0.4rem 0.6rem 0.45rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      background: rgba(15,23,42,0.95);
+    }
+    .answer-option:hover {
+      border-color: rgba(94,234,212,0.8);
+      background: radial-gradient(circle at top, rgba(45,212,191,0.2), rgba(15,23,42,0.95));
+    }
+    .answer-option.correct {
+      border-color: rgba(34,197,94,0.9);
+      background: radial-gradient(circle at top left, rgba(22,163,74,0.55), rgba(15,23,42,0.98));
+      box-shadow: 0 0 18px rgba(22,163,74,0.7);
+    }
+    .answer-option.wrong {
+      border-color: rgba(239,68,68,0.9);
+      background: radial-gradient(circle at top left, rgba(185,28,28,0.55), rgba(15,23,42,0.98));
+    }
+    .answer-option.disabled {
+      opacity: 0.8;
+      cursor: default;
+    }
+    .answer-letter {
+      font-weight: 600;
+      font-size: 0.8rem;
+      margin-top: 0.1rem;
+      color: #9ca3af;
+    }
+    .answer-text {
+      flex: 1;
+    }
+    .explanation {
+      margin-top: 0.45rem;
+      font-size: 0.8rem;
+      color: #d1d5db;
+      border-top: 1px dashed rgba(148,163,184,0.6);
+      padding-top: 0.4rem;
+    }
+    .quiz-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 0.45rem 0.95rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      background: radial-gradient(circle at top left, #22c55e, #15803d);
+      color: #ecfeff;
+      box-shadow: 0 12px 30px rgba(21,128,61,0.6);
+    }
+    button.secondary {
+      background: radial-gradient(circle at top left, #38bdf8, #0369a1);
+      box-shadow: 0 12px 30px rgba(3,105,161,0.7);
+    }
+    button.ghost {
+      background: transparent;
+      border: 1px solid rgba(148,163,184,0.6);
+      box-shadow: none;
+      color: #e5e7eb;
+    }
+    button:disabled {
+      opacity: 0.55;
+      cursor: default;
+      box-shadow: none;
+    }
+    /* Terminal */
+    #terminal-card {
+      margin-top: 1rem;
+    }
+    #terminal {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.83rem;
+      border-radius: 0.9rem;
+      border: 1px solid rgba(148,163,184,0.7);
+      background: radial-gradient(circle at top left, #0ea5e9, #020617);
+      padding: 0.6rem;
+      min-height: 260px;
+      max-height: 420px;
+      overflow-y: auto;
+      color: #e5e7eb;
+      box-shadow:
+        inset 0 0 0 1px rgba(15,23,42,0.8),
+        0 18px 35px rgba(15,23,42,0.9);
+    }
+    .term-line {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    #terminal-input-row {
+      display: flex;
+      gap: 0.4rem;
+      margin-top: 0.45rem;
+      align-items: center;
+      font-family: inherit;
+      font-size: 0.84rem;
+    }
+    #prompt {
+      color: #bbf7d0;
+      white-space: nowrap;
+    }
+    #term-input {
+      flex: 1;
+      background: rgba(15,23,42,0.95);
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.8);
+      padding: 0.35rem 0.7rem;
+      color: #f9fafb;
+      outline: none;
+    }
+    #term-input:focus {
+      border-color: rgba(56,189,248,0.9);
+      box-shadow: 0 0 0 1px rgba(56,189,248,0.5);
+    }
+    #terminal-help {
+      margin-top: 0.35rem;
+      font-size: 0.78rem;
+      color: #c7d2fe;
+    }
+    footer {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0 1rem 1.5rem;
+      font-size: 0.78rem;
+      color: #9ca3af;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.86em;
+      background: rgba(15,23,42,0.9);
+      padding: 0.08rem 0.35rem;
+      border-radius: 0.35rem;
+      border: 1px solid rgba(148,163,184,0.6);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav-inner">
+      <div class="brand">
+        <span class="logo">&gt;_</span>
+        <span>ITCS254 Linux Lab</span>
+      </div>
+      <nav class="nav-links">
+        <a href="#summary">Summary</a>
+        <a href="#quiz">MCQ Quiz</a>
+        <a href="#terminal-card">Practice Terminal</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section>
+      <h1>Final Revision: Linux Essentials</h1>
+      <p class="subtitle">
+        Use the multiple‑choice quiz on the right and the practice terminal below to review the core Linux topics:
+        user environment, text tools, networking, shell scripting, security and system administration.
+      </p>
+      <div class="pill-row">
+        <div class="pill">
+          <span class="dot"></span>
+          Interactive Ubuntu‑style terminal sandbox
+        </div>
+        <div class="pill">
+          25+ exam‑style MCQs with instant feedback
+        </div>
+        <div class="pill">
+          Designed for self‑study at home
+        </div>
+      </div>
+
+      <div id="summary" class="card">
+        <p class="section-title">Topic map</p>
+        <h2>What you should be confident with</h2>
+        <div class="topics-grid">
+          <div class="topic-chip">
+            <span class="label">User environment &amp; permissions</span>
+            <span class="meta">whoami · PATH · chmod</span>
+          </div>
+          <div class="topic-chip">
+            <span class="label">Text &amp; log tools</span>
+            <span class="meta">grep · sed · awk · sort</span>
+          </div>
+          <div class="topic-chip">
+            <span class="label">Networking basics</span>
+            <span class="meta">DNS · ping · ssh · scp</span>
+          </div>
+          <div class="topic-chip">
+            <span class="label">Shell scripting</span>
+            <span class="meta">if/elif · case · loops</span>
+          </div>
+          <div class="topic-chip">
+            <span class="label">Security</span>
+            <span class="meta">sudo · logs · passwords</span>
+          </div>
+          <div class="topic-chip">
+            <span class="label">Sysadmin</span>
+            <span class="meta">systemctl · sar · df/du</span>
+          </div>
+        </div>
+        <p style="margin-top:0.7rem;font-size:0.85rem;color:#e5e7eb;">
+          Tip: try to explain each bullet above in your own words. If you get stuck, open a terminal,
+          reproduce a simple example, and then answer the nearest MCQ.
+        </p>
+      </div>
+
+      <div id="terminal-card" class="card">
+        <p class="section-title">Practice</p>
+        <h2>Mini Ubuntu‑style terminal (in browser)</h2>
+        <div id="terminal"></div>
+        <div id="terminal-input-row">
+          <span id="prompt">student@linux-lab:~$</span>
+          <input id="term-input" type="text" autocomplete="off" spellcheck="false" />
+          <button id="clear-btn" class="ghost" type="button">Clear</button>
+        </div>
+        <div id="terminal-help">
+          Supported demo commands: <code>whoami</code>, <code>pwd</code>, <code>ls</code>, <code>cd</code>,
+          <code>echo</code>, <code>history</code>, <code>cat</code>, <code>touch</code>, <code>mkdir</code>,
+          <code>chmod</code> (symbolic only), <code>help</code>.
+        </div>
+      </div>
+    </section>
+
+    <aside id="quiz">
+      <div class="card">
+        <p class="section-title">Exam trainer</p>
+        <h2>MCQ quiz</h2>
+        <p style="font-size:0.85rem;color:#e5e7eb;margin-bottom:0.55rem;">
+          Choose the best answer for each question. You will see immediately if your choice is correct,
+          plus a short explanation. Use <strong>Next</strong> to move through the set.
+        </p>
+        <div id="quiz-container"></div>
+        <div class="quiz-controls">
+          <div>
+            <span id="progress-label">Question 1 / 1</span> ·
+            <span id="score-label">Score: 0</span>
+          </div>
+          <div style="display:flex;gap:0.35rem;">
+            <button id="prev-btn" class="ghost" type="button">Prev</button>
+            <button id="next-btn" class="secondary" type="button">Next</button>
+            <button id="shuffle-btn" class="ghost" type="button">Shuffle</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    Made for ITCS254 Linux practice. This is a lightweight teaching terminal:
+    it simulates common commands in JavaScript and does not modify your real system.
+  </footer>
+
+  <script>
+    // ---------- MCQ DATA ----------
+    const questions = [
+      {
+        topic: "User Environment",
+        question: "Which command prints the effective user name of the current shell?",
+        answers: ["id", "whoami", "users", "logname"],
+        correct: 1,
+        explanation: "whoami shows the effective user name associated with your current shell session."
+      },
+      {
+        topic: "User Environment",
+        question: "In bash, which file is most commonly used to store aliases for a single user?",
+        answers: ["~/.bashrc", "/etc/profile", "/etc/bash.bashrc", "~/.bash_history"],
+        correct: 0,
+        explanation: "~/.bashrc is read for interactive non-login shells and is the typical place to keep aliases."
+      },
+      {
+        topic: "User & Groups",
+        question: "Which file maps user names to their numeric UID, home directory and login shell?",
+        answers: ["/etc/group", "/etc/shadow", "/etc/passwd", "/etc/sudoers"],
+        correct: 2,
+        explanation: "/etc/passwd stores basic account information including username, UID, GID, home and shell."
+      },
+      {
+        topic: "Permissions",
+        question: "You want to give the owner full access and everyone else read+execute on script.sh. Which command is correct?",
+        answers: [
+          "chmod 700 script.sh",
+          "chmod 755 script.sh",
+          "chmod 644 script.sh",
+          "chmod 775 script.sh"
+        ],
+        correct: 1,
+        explanation: "755 corresponds to rwx for user (7) and r-x for group and others (5,5), typical for executable scripts."
+      },
+      {
+        topic: "Environment",
+        question: "What is the purpose of the PATH environment variable?",
+        answers: [
+          "It stores the current working directory.",
+          "It controls the default shell for the user.",
+          "It lists directories searched for executables when you run a command.",
+          "It sets the prompt format."
+        ],
+        correct: 2,
+        explanation: "PATH is an ordered list of directories the shell searches to locate the program for a command name."
+      },
+      {
+        topic: "History",
+        question: "Which file stores bash command history for a user by default?",
+        answers: [
+          "~/.bash_profile",
+          "~/.bash_history",
+          "/var/log/history",
+          "/etc/history"
+        ],
+        correct: 1,
+        explanation: "bash saves previous commands in the file ~/.bash_history for later recall."
+      },
+      {
+        topic: "Text Tools",
+        question: "Which command pair shows the first 10 lines of a file named log.txt?",
+        answers: [
+          "head log.txt",
+          "tail log.txt",
+          "less -n 10 log.txt",
+          "cat -n 10 log.txt"
+        ],
+        correct: 0,
+        explanation: "By default head prints the first 10 lines of its input; head log.txt is enough."
+      },
+      {
+        topic: "Text Tools",
+        question: "You want to replace every occurrence of 'dog' with 'cat' in file.txt and save the result to the same file. Which command should you use?",
+        answers: [
+          "sed 's/dog/cat/' file.txt",
+          "sed -i 's/dog/cat/g' file.txt",
+          "awk '{gsub(\"dog\",\"cat\"); print}' file.txt",
+          "tr 'dog' 'cat' < file.txt > file.txt"
+        ],
+        correct: 1,
+        explanation: "sed -i does an in-place edit; the /g flag replaces all matches on each line, not just the first."
+      },
+      {
+        topic: "grep & regex",
+        question: "Which grep command prints all lines in auth.log that do NOT contain the word 'FAILED'?",
+        answers: [
+          "grep FAILED auth.log",
+          "grep -i FAILED auth.log",
+          "grep -v FAILED auth.log",
+          "grep -C 3 FAILED auth.log"
+        ],
+        correct: 2,
+        explanation: "The -v option in grep inverts the match, showing all lines that do not match the pattern."
+      },
+      {
+        topic: "awk",
+        question: "Which awk command prints only the first field (separated by ':') from /etc/passwd?",
+        answers: [
+          "awk '{print $1}' /etc/passwd",
+          "awk -F: '{print $1}' /etc/passwd",
+          "awk -F: '{print $0}' /etc/passwd",
+          "awk '{print $1 $7}' /etc/passwd"
+        ],
+        correct: 1,
+        explanation: "With -F: awk treats ':' as the field separator; {print $1} prints the first field (the username)."
+      },
+      {
+        topic: "sort/uniq",
+        question: "To sort a file names.txt and remove duplicate lines in one step, which command is best?",
+        answers: [
+          "uniq names.txt",
+          "sort names.txt | uniq",
+          "sort -u names.txt",
+          "uniq -c names.txt | sort"
+        ],
+        correct: 2,
+        explanation: "sort -u sorts the file and outputs each unique line once; it's equivalent to sort | uniq."
+      },
+      {
+        topic: "Networking",
+        question: "Which command checks basic connectivity to a remote host by sending ICMP echo requests?",
+        answers: ["ping", "traceroute", "ssh", "curl"],
+        correct: 0,
+        explanation: "ping sends ICMP echo requests and shows whether the host is reachable and the round‑trip time."
+      },
+      {
+        topic: "Networking",
+        question: "On a modern Linux system, which command is preferred to display IP addresses for interfaces?",
+        answers: [
+          "ifconfig -a",
+          "ip addr show",
+          "route -n",
+          "netstat -i"
+        ],
+        correct: 1,
+        explanation: "The ip command (ip addr show) is the modern replacement for ifconfig on Linux."
+      },
+      {
+        topic: "DNS",
+        question: "Which file primarily controls which DNS servers your system contacts for name resolution?",
+        answers: [
+          "/etc/hosts",
+          "/etc/hostname",
+          "/etc/resolv.conf",
+          "/etc/netplan.yaml"
+        ],
+        correct: 2,
+        explanation: "/etc/resolv.conf lists the nameserver entries used for DNS resolution (or is generated from higher‑level tools)."
+      },
+      {
+        topic: "Remote Access",
+        question: "What is the main difference between scp and sftp?",
+        answers: [
+          "scp copies files using SSH; sftp provides an interactive FTP-like session over SSH.",
+          "scp is insecure; sftp is encrypted.",
+          "sftp only works for anonymous downloads.",
+          "scp can resume transfers; sftp cannot."
+        ],
+        correct: 0,
+        explanation: "Both use SSH; scp is a copy command, while sftp is an interactive file transfer shell."
+      },
+      {
+        topic: "Shell Scripting",
+        question: "Which line must appear on the first line of a bash script to select bash as the interpreter?",
+        answers: [
+          "# bash",
+          "#!/bin/sh",
+          "#!/bin/bash",
+          "shell=/bin/bash"
+        ],
+        correct: 2,
+        explanation: "The shebang line #!/bin/bash at the top tells the OS to run the script using the bash interpreter."
+      },
+      {
+        topic: "Shell Scripting",
+        question: "Inside a script, what does the parameter $1 represent?",
+        answers: [
+          "The script name.",
+          "The first argument passed to the script.",
+          "The process ID of the script.",
+          "The exit status of the last command."
+        ],
+        correct: 1,
+        explanation: "$1 is the first positional parameter, i.e. the first argument after the script name on the command line."
+      },
+      {
+        topic: "Conditionals",
+        question: "Which snippet correctly tests whether /etc/passwd exists and is a regular file?",
+        answers: [
+          "if [ -e /etc/passwd ]; then",
+          "if [ -d /etc/passwd ]; then",
+          "if [ -f /etc/passwd ]; then",
+          "if [ /etc/passwd ]; then"
+        ],
+        correct: 2,
+        explanation: "-f tests for a regular file; -e tests existence of any type, -d tests for a directory."
+      },
+      {
+        topic: "Loops",
+        question: "Which for loop prints the numbers 1 to 5 in bash?",
+        answers: [
+          "for i in 1..5; do echo $i; done",
+          "for i in {1..5}; do echo $i; done",
+          "for (i=1;i<=5;i++); echo $i;",
+          "for i in $(1..5); echo $i;"
+        ],
+        correct: 1,
+        explanation: "Brace expansion {1..5} is commonly used with for to iterate over a numeric range in bash."
+      },
+      {
+        topic: "Debugging",
+        question: "Which command runs script.sh in bash debug mode, printing each command as it executes?",
+        answers: [
+          "bash script.sh",
+          "bash -x script.sh",
+          "sh -d script.sh",
+          "debug script.sh"
+        ],
+        correct: 1,
+        explanation: "bash -x enables execution trace mode, useful when debugging shell scripts."
+      },
+      {
+        topic: "Security",
+        question: "Compared to su, which of the following is a key advantage of sudo?",
+        answers: [
+          "sudo does not require a password.",
+          "sudo allows fine-grained control and logs each privileged command.",
+          "sudo always gives full root access with no restrictions.",
+          "sudo only works on desktop systems."
+        ],
+        correct: 1,
+        explanation: "sudo can restrict which commands a user may run and records detailed logs of usage."
+      },
+      {
+        topic: "Passwords",
+        question: "On a modern Linux system, where are hashed passwords for local users normally stored?",
+        answers: [
+          "/etc/passwd",
+          "/etc/shadow",
+          "/etc/security",
+          "/var/log/secure"
+        ],
+        correct: 1,
+        explanation: "Hashed passwords and aging information are stored in /etc/shadow, which is readable only by root."
+      },
+      {
+        topic: "Logging",
+        question: "Which directory contains most traditional text log files such as messages and secure?",
+        answers: [
+          "/var/log",
+          "/etc/log",
+          "/usr/log",
+          "/opt/log"
+        ],
+        correct: 0,
+        explanation: "The standard location for system log files on Linux is /var/log."
+      },
+      {
+        topic: "Systemd & Services",
+        question: "Which systemctl command both starts the ssh service now and ensures it starts on boot?",
+        answers: [
+          "systemctl start ssh",
+          "systemctl enable ssh",
+          "systemctl restart ssh",
+          "systemctl start ssh && systemctl enable ssh"
+        ],
+        correct: 3,
+        explanation: "start affects the current boot only; enable configures autostart. Both are needed for immediate and persistent effect."
+      },
+      {
+        topic: "Disk Usage",
+        question: "Which command shows disk space usage for mounted filesystems in a human-readable format (GB/MB)?",
+        answers: [
+          "df -h",
+          "du -b",
+          "lsblk",
+          "mount"
+        ],
+        correct: 0,
+        explanation: "df -h reports used and available space for filesystems, using human-readable units."
+      },
+      {
+        topic: "CPU & Memory",
+        question: "Which command provides an interactive, continuously updated view of CPU and memory usage for processes?",
+        answers: [
+          "sar",
+          "top",
+          "vmstat",
+          "ps aux"
+        ],
+        correct: 1,
+        explanation: "top is an interactive monitor that refreshes CPU, memory and process statistics every few seconds."
+      }
+    ];
+
+    let currentIndex = 0;
+    let score = 0;
+    const answered = new Array(questions.length).fill(false);
+
+    const quizContainer = document.getElementById("quiz-container");
+    const progressLabel = document.getElementById("progress-label");
+    const scoreLabel = document.getElementById("score-label");
+    const prevBtn = document.getElementById("prev-btn");
+    const nextBtn = document.getElementById("next-btn");
+    const shuffleBtn = document.getElementById("shuffle-btn");
+
+    function renderQuestion() {
+      const q = questions[currentIndex];
+      quizContainer.innerHTML = "";
+
+      const card = document.createElement("div");
+      card.className = "question-card";
+
+      const header = document.createElement("div");
+      header.className = "question-header";
+
+      const titleWrap = document.createElement("div");
+      const h3 = document.createElement("h3");
+      h3.textContent = q.question;
+      titleWrap.appendChild(h3);
+
+      const topic = document.createElement("div");
+      topic.className = "question-topic";
+      topic.textContent = q.topic;
+
+      header.appendChild(titleWrap);
+      header.appendChild(topic);
+
+      card.appendChild(header);
+
+      const answersDiv = document.createElement("div");
+      answersDiv.className = "answers";
+
+      q.answers.forEach((ans, idx) => {
+        const opt = document.createElement("div");
+        opt.className = "answer-option";
+        opt.dataset.index = idx;
+
+        const letter = document.createElement("div");
+        letter.className = "answer-letter";
+        letter.textContent = String.fromCharCode(65 + idx) + ".";
+
+        const text = document.createElement("div");
+        text.className = "answer-text";
+        text.textContent = ans;
+
+        opt.appendChild(letter);
+        opt.appendChild(text);
+
+        opt.addEventListener("click", () => handleAnswerClick(opt, idx));
+
+        answersDiv.appendChild(opt);
+      });
+
+      card.appendChild(answersDiv);
+
+      const expl = document.createElement("div");
+      expl.className = "explanation";
+      expl.id = "explanation";
+      expl.style.display = "none";
+      expl.textContent = "";
+      card.appendChild(expl);
+
+      quizContainer.appendChild(card);
+
+      progressLabel.textContent = `Question ${currentIndex + 1} / ${questions.length}`;
+      scoreLabel.textContent = `Score: ${score}`;
+      prevBtn.disabled = currentIndex === 0;
+      nextBtn.disabled = currentIndex === questions.length - 1;
+    }
+
+    function handleAnswerClick(optionElement, idx) {
+      const q = questions[currentIndex];
+
+      const already = answered[currentIndex];
+      const options = quizContainer.querySelectorAll(".answer-option");
+
+      if (!already) {
+        answered[currentIndex] = true;
+
+        options.forEach(o => o.classList.add("disabled"));
+
+        if (idx === q.correct) {
+          optionElement.classList.add("correct");
+          score++;
+        } else {
+          optionElement.classList.add("wrong");
+          options[q.correct].classList.add("correct");
+        }
+
+        const expl = document.getElementById("explanation");
+        expl.textContent = q.explanation;
+        expl.style.display = "block";
+
+        scoreLabel.textContent = `Score: ${score}`;
+      }
+    }
+
+    prevBtn.addEventListener("click", () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        renderQuestion();
+      }
+    });
+
+    nextBtn.addEventListener("click", () => {
+      if (currentIndex < questions.length - 1) {
+        currentIndex++;
+        renderQuestion();
+      }
+    });
+
+    shuffleBtn.addEventListener("click", () => {
+      // Fisher-Yates shuffle
+      for (let i = questions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [questions[i], questions[j]] = [questions[j], questions[i]];
+        [answered[i], answered[j]] = [answered[j], answered[i]];
+      }
+      currentIndex = 0;
+      score = 0;
+      for (let k = 0; k < answered.length; k++) answered[k] = false;
+      renderQuestion();
+    });
+
+    // ---------- TERMINAL SIMULATION ----------
+    const termDiv = document.getElementById("terminal");
+    const termInput = document.getElementById("term-input");
+    const clearBtn = document.getElementById("clear-btn");
+    const promptSpan = document.getElementById("prompt");
+
+    let cwd = "/home/student";
+    const history = [];
+    let historyIndex = -1;
+
+    const fs = {
+      "/": ["home", "var", "etc", "tmp"],
+      "/home": ["student"],
+      "/home/student": ["Desktop", "Documents", "lab.sh"],
+      "/var": ["log"],
+      "/var/log": ["syslog", "auth.log"],
+      "/etc": ["passwd", "shadow"]
+    };
+
+    function renderPrompt() {
+      promptSpan.textContent = `student@linux-lab:${cwd.replace("/home/student", "~")}$`;
+    }
+
+    function printLine(text = "") {
+      const line = document.createElement("div");
+      line.className = "term-line";
+      line.textContent = text;
+      termDiv.appendChild(line);
+      termDiv.scrollTop = termDiv.scrollHeight;
+    }
+
+    function handleCommand(cmdLine) {
+      const line = cmdLine.trim();
+      if (line === "") return;
+
+      history.push(line);
+      historyIndex = history.length;
+
+      printLine(`student@linux-lab:${cwd.replace("/home/student", "~")}$ ${line}`);
+
+      const parts = line.split(" ");
+      const cmd = parts[0];
+      const args = parts.slice(1);
+
+      switch (cmd) {
+        case "whoami":
+          printLine("student");
+          break;
+        case "pwd":
+          printLine(cwd);
+          break;
+        case "echo":
+          printLine(args.join(" "));
+          break;
+        case "help":
+          printLine("Supported demo commands: whoami, pwd, ls, cd, echo, history, cat, touch, mkdir, chmod, clear, help");
+          break;
+        case "ls":
+          {
+            let target = cwd;
+            if (args[0]) {
+              if (args[0].startsWith("/")) {
+                target = args[0];
+              } else if (args[0] === "~") {
+                target = "/home/student";
+              } else {
+                target = cwd.replace(/\/$/, "") + "/" + args[0];
+              }
+            }
+            const contents = fs[target];
+            if (contents) {
+              printLine(contents.join("  "));
+            } else {
+              printLine(`ls: cannot access '${args[0] || ""}': No such file or directory`);
+            }
+          }
+          break;
+        case "cd":
+          {
+            const targetArg = args[0];
+            let target;
+            if (!targetArg || targetArg === "~") {
+              target = "/home/student";
+            } else if (targetArg === "..") {
+              if (cwd !== "/") {
+                target = cwd.split("/").slice(0, -1).join("/") || "/";
+              } else {
+                target = "/";
+              }
+            } else if (targetArg.startsWith("/")) {
+              target = targetArg;
+            } else {
+              target = cwd.replace(/\/$/, "") + "/" + targetArg;
+            }
+            if (fs[target]) {
+              cwd = target;
+              renderPrompt();
+            } else {
+              printLine(`bash: cd: ${targetArg}: No such file or directory`);
+            }
+          }
+          break;
+        case "history":
+          history.forEach((h, idx) => {
+            printLine(`${idx + 1}  ${h}`);
+          });
+          break;
+        case "cat":
+          if (!args[0]) {
+            printLine("usage: cat <file>");
+          } else {
+            const filename = args[0];
+            if (cwd === "/etc" && (filename === "passwd" || filename === "shadow")) {
+              printLine(`(demo) Showing fake ${filename} content...`);
+            } else if (filename === "lab.sh") {
+              printLine("#!/bin/bash");
+              printLine('echo \"Hello from the practice terminal\"');
+            } else {
+              printLine(`cat: ${filename}: demo file content not available`);
+            }
+          }
+          break;
+        case "touch":
+          if (!args[0]) {
+            printLine("usage: touch <file>");
+          } else {
+            const filename = args[0];
+            const key = cwd;
+            if (!fs[key]) fs[key] = [];
+            if (!fs[key].includes(filename)) fs[key].push(filename);
+            printLine("");
+          }
+          break;
+        case "mkdir":
+          if (!args[0]) {
+            printLine("usage: mkdir <dir>");
+          } else {
+            const dirname = args[0];
+            const newPath = cwd.replace(/\/$/, "") + "/" + dirname;
+            if (!fs[newPath]) {
+              fs[newPath] = [];
+              if (!fs[cwd].includes(dirname)) fs[cwd].push(dirname);
+              printLine("");
+            } else {
+              printLine(`mkdir: cannot create directory '${dirname}': File exists`);
+            }
+          }
+          break;
+        case "chmod":
+          if (args.length < 2) {
+            printLine("usage: chmod MODE FILE");
+          } else {
+            printLine("(demo) chmod accepted. In a real shell this would change file permissions.");
+          }
+          break;
+        case "clear":
+          termDiv.innerHTML = "";
+          break;
+        default:
+          printLine(`${cmd}: command not implemented in this practice lab`);
+      }
+    }
+
+    termInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        const value = termInput.value;
+        termInput.value = "";
+        handleCommand(value);
+      } else if (e.key === "ArrowUp") {
+        if (historyIndex > 0) {
+          historyIndex--;
+          termInput.value = history[historyIndex] || "";
+          setTimeout(() => termInput.setSelectionRange(termInput.value.length, termInput.value.length), 0);
+        }
+        e.preventDefault();
+      } else if (e.key === "ArrowDown") {
+        if (historyIndex < history.length - 1) {
+          historyIndex++;
+          termInput.value = history[historyIndex] || "";
+        } else {
+          historyIndex = history.length;
+          termInput.value = "";
+        }
+        e.preventDefault();
+      }
+    });
+
+    clearBtn.addEventListener("click", () => {
+      termDiv.innerHTML = "";
+    });
+
+    window.addEventListener("load", () => {
+      renderPrompt();
+      renderQuestion();
+      printLine("Welcome to the ITCS254 in‑browser practice terminal.");
+      printLine("Type 'help' to see the list of supported demo commands.");
+      termInput.focus();
+    });
+  </script>
+</body>
+</html>
