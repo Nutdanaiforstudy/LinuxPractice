@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Linux Final Exam Practice Lab</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #e5e7eb;
+      background: #020617;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #0f172a, #020617 55%);
+      color: #e5e7eb;
+    }
+    a { color: #38bdf8; }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(18px);
+      background: linear-gradient(to right, rgba(15,23,42,0.96), rgba(15,23,42,0.85));
+      border-bottom: 1px solid rgba(148,163,184,0.4);
+    }
+    .nav-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0.6rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+    }
+    .brand-logo {
+      width: 1.7rem;
+      height: 1.7rem;
+      border-radius: 0.9rem;
+      border: 1px solid rgba(56,189,248,0.7);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 25% 0, #38bdf8, #0f172a);
+      box-shadow:
+        0 0 18px rgba(56,189,248,0.7),
+        0 0 40px rgba(8,47,73,0.85);
+      font-size: 0.95rem;
+    }
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      font-size: 0.82rem;
+    }
+    .nav-links a {
+      padding: 0.32rem 0.8rem;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      text-decoration: none;
+      color: #e5e7eb;
+      background: rgba(15,23,42,0.8);
+    }
+    .nav-links a:hover {
+      border-color: rgba(56,189,248,0.9);
+      background: radial-gradient(circle at top, rgba(37,99,235,0.25), rgba(15,23,42,0.92));
+    }
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 1.3rem 1rem 2.2rem;
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2.4fr);
+      gap: 1.4rem;
+    }
+    @media (max-width: 960px) {
+      main { grid-template-columns: minmax(0, 1fr); }
+    }
+    h1 {
+      font-size: clamp(1.8rem, 2.6vw, 2.2rem);
+      margin: 0 0 0.25rem;
+      letter-spacing: -.03em;
+    }
+    .subtitle {
+      margin: 0 0 0.8rem;
+      font-size: 0.95rem;
+      color: #cbd5f5;
+      max-width: 34rem;
+    }
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+    }
+    .pill {
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.6);
+      padding: 0.3rem 0.8rem;
+      font-size: 0.78rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: linear-gradient(to right, rgba(15,23,42,0.95), rgba(15,23,42,0.8));
+    }
+    .pill-dot {
+      width: 0.45rem;
+      height: 0.45rem;
+      border-radius: 999px;
+      background: radial-gradient(circle at 25% 0, #22c55e, #166534);
+      box-shadow: 0 0 8px rgba(22,163,74,0.9);
+    }
+    .card {
+      border-radius: 1rem;
+      border: 1px solid rgba(148,163,184,0.5);
+      background: radial-gradient(circle at top left, rgba(59,130,246,0.16), rgba(15,23,42,0.96));
+      box-shadow:
+        0 22px 40px rgba(15,23,42,0.92),
+        inset 0 0 0 1px rgba(15,23,42,0.96);
+      padding: 0.9rem 1rem 1.1rem;
+    }
+    .section-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: .18em;
+      color: #9ca3af;
+      margin-bottom: 0.3rem;
+    }
+    .topics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+      gap: 0.55rem;
+      margin-top: 0.4rem;
+    }
+    .topic-chip {
+      border-radius: 0.8rem;
+      border: 1px solid rgba(148,163,184,0.6);
+      padding: 0.45rem 0.65rem;
+      font-size: 0.8rem;
+      background: linear-gradient(to right, rgba(15,23,42,0.96), rgba(15,23,42,0.86));
+      display: flex;
+      justify-content: space-between;
+      gap: 0.6rem;
+    }
+    .topic-chip span.meta {
+      font-size: 0.72rem;
+      color: #9ca3af;
+    }
+    /* Task list */
+    #tasks-list {
+      margin: 0.4rem 0 0;
+      padding-left: 1.15rem;
+      font-size: 0.86rem;
+    }
+    #tasks-list li {
+      margin-bottom: 0.3rem;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.86em;
+      background: rgba(15,23,42,0.9);
+      padding: 0.08rem 0.3rem;
+      border-radius: 0.3rem;
+      border: 1px solid rgba(148,163,184,0.5);
+    }
+    /* Terminal */
+    #terminal-card {
+      margin-top: 0.8rem;
+    }
+    #terminal {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.82rem;
+      background: radial-gradient(circle at top left, #0ea5e9, #020617);
+      border-radius: 0.85rem;
+      border: 1px solid rgba(148,163,184,0.75);
+      min-height: 260px;
+      max-height: 420px;
+      overflow-y: auto;
+      padding: 0.6rem;
+      box-shadow:
+        inset 0 0 0 1px rgba(15,23,42,0.9),
+        0 18px 35px rgba(15,23,42,0.98);
+    }
+    .term-line {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    #term-input-row {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 0.45rem;
+      font-family: inherit;
+      font-size: 0.82rem;
+    }
+    #prompt {
+      white-space: nowrap;
+      color: #bbf7d0;
+    }
+    #term-input {
+      flex: 1;
+      background: rgba(15,23,42,0.96);
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.8);
+      color: #f9fafb;
+      padding: 0.35rem 0.7rem;
+      outline: none;
+    }
+    #term-input:focus {
+      border-color: rgba(56,189,248,0.9);
+      box-shadow: 0 0 0 1px rgba(56,189,248,0.6);
+    }
+    #clear-btn {
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.75);
+      background: transparent;
+      color: #e5e7eb;
+      padding: 0.32rem 0.8rem;
+      font-size: 0.78rem;
+      cursor: pointer;
+    }
+    #clear-btn:hover {
+      background: rgba(15,23,42,0.9);
+    }
+    #terminal-help {
+      margin-top: 0.35rem;
+      font-size: 0.78rem;
+      color: #d1d5db;
+    }
+    /* Quiz */
+    #quiz-card {
+      position: relative;
+    }
+    .question-card {
+      border-radius: 0.9rem;
+      border: 1px solid rgba(148,163,184,0.55);
+      padding: 0.8rem 0.9rem;
+      background: radial-gradient(circle at top left, rgba(45,212,191,0.14), rgba(15,23,42,0.97));
+      margin-top: 0.4rem;
+    }
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.6rem;
+      align-items: baseline;
+    }
+    .question-header h3 {
+      margin: 0 0 0.3rem;
+      font-size: 0.95rem;
+    }
+    .question-topic {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: .16em;
+      color: #a5b4fc;
+      white-space: nowrap;
+    }
+    .answers {
+      display: grid;
+      gap: 0.35rem;
+      margin-top: 0.2rem;
+    }
+    .answer-option {
+      border-radius: 0.75rem;
+      border: 1px solid rgba(148,163,184,0.6);
+      padding: 0.4rem 0.6rem;
+      display: flex;
+      gap: 0.5rem;
+      align-items: flex-start;
+      cursor: pointer;
+      background: rgba(15,23,42,0.97);
+      font-size: 0.85rem;
+    }
+    .answer-option:hover {
+      border-color: rgba(94,234,212,0.9);
+      background: radial-gradient(circle at top, rgba(45,212,191,0.22), rgba(15,23,42,0.97));
+    }
+    .answer-option.disabled {
+      opacity: 0.82;
+      cursor: default;
+    }
+    .answer-option.correct {
+      border-color: rgba(34,197,94,0.95);
+      background: radial-gradient(circle at top left, rgba(22,163,74,0.6), rgba(15,23,42,0.99));
+      box-shadow: 0 0 16px rgba(22,163,74,0.7);
+    }
+    .answer-option.wrong {
+      border-color: rgba(239,68,68,0.9);
+      background: radial-gradient(circle at top left, rgba(185,28,28,0.6), rgba(15,23,42,0.99));
+    }
+    .answer-letter {
+      font-weight: 600;
+      font-size: 0.78rem;
+      margin-top: 0.1rem;
+      color: #9ca3af;
+    }
+    .answer-text { flex: 1; }
+    .explanation {
+      margin-top: 0.45rem;
+      font-size: 0.8rem;
+      color: #e5e7eb;
+      border-top: 1px dashed rgba(148,163,184,0.7);
+      padding-top: 0.4rem;
+    }
+    .quiz-controls {
+      margin-top: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: #9ca3af;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+    .btn {
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.8rem;
+      padding: 0.4rem 0.85rem;
+      font-weight: 500;
+      color: #ecfeff;
+    }
+    .btn-primary {
+      background: radial-gradient(circle at top left, #22c55e, #15803d);
+      box-shadow: 0 12px 30px rgba(21,128,61,0.7);
+    }
+    .btn-secondary {
+      background: radial-gradient(circle at top left, #38bdf8, #0369a1);
+      box-shadow: 0 12px 30px rgba(3,105,161,0.7);
+    }
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid rgba(148,163,184,0.7);
+      color: #e5e7eb;
+      box-shadow: none;
+    }
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: default;
+      box-shadow: none;
+    }
+    footer {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 1rem 1.3rem;
+      font-size: 0.78rem;
+      color: #9ca3af;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav-inner">
+      <div class="brand">
+        <span class="brand-logo">&gt;_</span>
+        <span>ITCS254 Linux Practice Lab</span>
+      </div>
+      <nav class="nav-links">
+        <a href="#tasks-card">Terminal Tasks</a>
+        <a href="#terminal-card">Practice Terminal</a>
+        <a href="#quiz-card">MCQ Quiz</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section>
+      <h1>Final Exam Practice – Linux &amp; Shell</h1>
+      <p class="subtitle">
+        Use the tasks below and the simulated Ubuntu terminal to practise commands from all lectures:
+        user environment, text tools, networking, shell scripting, security, and system administration.
+      </p>
+      <div class="pill-row">
+        <div class="pill"><span class="pill-dot"></span>Fully offline – runs in your browser</div>
+        <div class="pill">Random 26-question MCQ each time</div>
+        <div class="pill">Based on ITCS254 lecture slides + cheat sheet</div>
+      </div>
+
+      <div class="card" id="topics-card">
+        <p class="section-title">Topic map</p>
+        <div class="topics-grid">
+          <div class="topic-chip">
+            <span>User environment &amp; permissions</span>
+            <span class="meta">whoami · id · chmod</span>
+          </div>
+          <div class="topic-chip">
+            <span>Text tools &amp; logs</span>
+            <span class="meta">grep · sed · awk · sort</span>
+          </div>
+          <div class="topic-chip">
+            <span>Network operations</span>
+            <span class="meta">ping · ip · ssh · curl</span>
+          </div>
+          <div class="topic-chip">
+            <span>Shell scripting</span>
+            <span class="meta">if/case · loops · debug</span>
+          </div>
+          <div class="topic-chip">
+            <span>Security &amp; sudo</span>
+            <span class="meta">/etc/shadow · chage · auditctl</span>
+          </div>
+          <div class="topic-chip">
+            <span>System administration</span>
+            <span class="meta">systemctl · df/du · sar/top</span>
+          </div>
+        </div>
+        <p style="margin-top:0.7rem;font-size:0.87rem;">
+          Treat this as a mini-lab: read each task, try it in the terminal, then test yourself with the MCQ quiz.
+          Solutions are provided in a separate ZIP so you can check your work after attempting on your own.
+        </p>
+      </div>
+
+      <div class="card" id="tasks-card">
+        <p class="section-title">Terminal practice tasks</p>
+        <h3 style="margin-top:0;margin-bottom:0.4rem;">Complete these in the terminal below</h3>
+        <ol id="tasks-list">
+          <li>Create a working directory <code>~/lab1</code> and move into it.</li>
+          <li>Inside <code>lab1</code>, create three files: <code>report.txt</code>, <code>data.txt</code>, <code>script.sh</code>.</li>
+          <li>Append a line of text to <code>report.txt</code> and view it using <code>cat</code>, <code>head</code>, and <code>tail</code>.</li>
+          <li>Use <code>echo</code> and the append operator <code>&gt;&gt;</code> to add three lines to <code>data.txt</code>, then sort and remove duplicates.</li>
+          <li>Search for a specific word inside <code>data.txt</code> using <code>grep</code>.</li>
+          <li>Use <code>chmod</code> to make <code>script.sh</code> executable, then run it with <code>bash script.sh</code>.</li>
+          <li>Create a simple script that uses an <code>if</code> statement to test whether <code>/etc/passwd</code> exists and prints a message.</li>
+          <li>Create another script using a <code>case</code> statement that prints a different message for inputs <code>start</code>, <code>stop</code>, or anything else.</li>
+          <li>Write a <code>for</code> loop script that prints the numbers 1 to 5.</li>
+          <li>Write a <code>while</code> loop script that counts down from 5 to 1.</li>
+          <li>Simulate checking your IP address and default route using <code>ip addr</code> and <code>ip route</code>.</li>
+          <li>Simulate downloading a file from the Internet using <code>wget</code> or <code>curl</code> (the terminal will print demo output).</li>
+          <li>Use <code>sudo</code> in the terminal and observe how the simulator responds to privileged commands.</li>
+          <li>Simulate viewing system logs with <code>journalctl</code> or <code>tail /var/log/syslog</code>.</li>
+          <li>Run <code>df -h</code> and <code>du</code> in the simulator to review disk usage concepts.</li>
+          <li>Explore process monitoring concepts by running <code>top</code> or <code>ps aux</code> (simulated summary).</li>
+          <li>Pretend to start and enable a service using <code>systemctl start apache2</code> and <code>systemctl enable apache2</code>.</li>
+          <li>Create a temporary directory under <code>/tmp</code> and practise removing it safely.</li>
+          <li>Experiment with <code>/dev/null</code> by redirecting command output there.</li>
+          <li>Use the <code>$RANDOM</code> variable in a small script that prints ten random numbers.</li>
+        </ol>
+      </div>
+
+      <div class="card" id="terminal-card">
+        <p class="section-title">Practice terminal</p>
+        <h3 style="margin-top:0;margin-bottom:0.4rem;">Simulated Ubuntu shell</h3>
+        <div id="terminal"></div>
+        <div id="term-input-row">
+          <span id="prompt">student@ubuntu:~$</span>
+          <input id="term-input" type="text" autocomplete="off" spellcheck="false" />
+          <button id="clear-btn" type="button">Clear</button>
+        </div>
+        <div id="terminal-help">
+          Try commands like <code>pwd</code>, <code>ls</code>, <code>cd</code>, <code>mkdir</code>, <code>touch</code>, <code>cat</code>, <code>echo</code>, <code>grep</code>,
+          <code>head</code>, <code>tail</code>, <code>chmod</code>, <code>whoami</code>, <code>id</code>, <code>ping</code>, <code>ip addr</code>, <code>wget</code>, <code>curl</code>,
+          <code>sudo</code>, <code>df</code>, <code>du</code>, <code>top</code>, <code>ps</code>, <code>systemctl</code>, and more. Type <code>help</code> inside the terminal for the full list.
+        </div>
+      </div>
+    </section>
+
+    <aside id="quiz-card">
+      <div class="card">
+        <p class="section-title">MCQ exam trainer</p>
+        <h3 style="margin-top:0;margin-bottom:0.4rem;">Random 26-question quiz</h3>
+        <p style="font-size:0.87rem;margin-bottom:0.6rem;">
+          Each time you open this page, a fresh set of 26 questions is drawn from a 500-question pool.
+          Answer carefully and read the explanation after each question to understand the reasoning.
+        </p>
+        <div id="quiz-container"></div>
+        <div class="quiz-controls">
+          <div>
+            <span id="progress-label">Question 1 / 26</span> ·
+            <span id="score-label">Score: 0</span>
+          </div>
+          <div style="display:flex;gap:0.3rem;flex-wrap:wrap;">
+            <button id="prev-btn" class="btn btn-ghost" type="button">Prev</button>
+            <button id="next-btn" class="btn btn-secondary" type="button">Next</button>
+            <button id="shuffle-btn" class="btn btn-primary" type="button">New 26 questions</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    This lab is a teaching simulator. It does not touch your real system, but models the behaviour of common Linux commands
+    and exam-style questions so you can practise safely at home.
+  </footer>
+
+  <script src="questions.js"></script>
+  <script src="terminal.js"></script>
+  <script>
+    // ---------- Quiz logic (uses ALL_QUESTIONS from questions.js) ----------
+    const QUESTION_COUNT = 26;
+    let quizQuestions = [];
+    let currentIndex = 0;
+    let score = 0;
+    let answered = [];
+
+    const quizContainer = document.getElementById("quiz-container");
+    const progressLabel = document.getElementById("progress-label");
+    const scoreLabel = document.getElementById("score-label");
+    const prevBtn = document.getElementById("prev-btn");
+    const nextBtn = document.getElementById("next-btn");
+    const shuffleBtn = document.getElementById("shuffle-btn");
+
+    function pickRandomQuestions(pool, count) {
+      const copy = [...pool];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy.slice(0, count);
+    }
+
+    function resetQuiz() {
+      quizQuestions = pickRandomQuestions(
+  typeof ALL_QUESTIONS !== "undefined" ? ALL_QUESTIONS : [],
+  QUESTION_COUNT
+);
+
+      currentIndex = 0;
+      score = 0;
+      answered = new Array(quizQuestions.length).fill(false);
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const q = quizQuestions[currentIndex];
+      quizContainer.innerHTML = "";
+      if (!q) {
+        quizContainer.textContent = "Question data not loaded. Please check questions.js.";
+        return;
+      }
+
+      const card = document.createElement("div");
+      card.className = "question-card";
+
+      const header = document.createElement("div");
+      header.className = "question-header";
+
+      const titleWrap = document.createElement("div");
+      const h3 = document.createElement("h3");
+      h3.textContent = q.question;
+      titleWrap.appendChild(h3);
+
+      const topic = document.createElement("div");
+      topic.className = "question-topic";
+      topic.textContent = q.topic || "Linux";
+
+      header.appendChild(titleWrap);
+      header.appendChild(topic);
+
+      card.appendChild(header);
+
+      const answersDiv = document.createElement("div");
+      answersDiv.className = "answers";
+
+      q.answers.forEach((ans, idx) => {
+        const opt = document.createElement("div");
+        opt.className = "answer-option";
+        opt.dataset.index = idx;
+
+        const letter = document.createElement("div");
+        letter.className = "answer-letter";
+        letter.textContent = String.fromCharCode(65 + idx) + ".";
+
+        const text = document.createElement("div");
+        text.className = "answer-text";
+        text.textContent = ans;
+
+        opt.appendChild(letter);
+        opt.appendChild(text);
+        opt.addEventListener("click", () => handleAnswer(opt, idx));
+        answersDiv.appendChild(opt);
+      });
+
+      card.appendChild(answersDiv);
+
+      const expl = document.createElement("div");
+      expl.className = "explanation";
+      expl.id = "explanation";
+      expl.style.display = "none";
+      expl.textContent = "";
+      card.appendChild(expl);
+
+      quizContainer.appendChild(card);
+
+      progressLabel.textContent = `Question ${currentIndex + 1} / ${quizQuestions.length}`;
+      scoreLabel.textContent = `Score: ${score}`;
+      prevBtn.disabled = currentIndex === 0;
+      nextBtn.disabled = currentIndex === quizQuestions.length - 1;
+    }
+
+    function handleAnswer(optElem, idx) {
+      const q = quizQuestions[currentIndex];
+      const already = answered[currentIndex];
+      const options = quizContainer.querySelectorAll(".answer-option");
+      const expl = document.getElementById("explanation");
+
+      if (already) return;
+
+      answered[currentIndex] = true;
+      options.forEach(o => o.classList.add("disabled"));
+
+      if (idx === q.correctIndex) {
+        optElem.classList.add("correct");
+        score++;
+      } else {
+        optElem.classList.add("wrong");
+        if (options[q.correctIndex]) {
+          options[q.correctIndex].classList.add("correct");
+        }
+      }
+
+      expl.textContent = q.explanation || "";
+      expl.style.display = "block";
+      scoreLabel.textContent = `Score: ${score}`;
+    }
+
+    prevBtn.addEventListener("click", () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        renderQuestion();
+      }
+    });
+
+    nextBtn.addEventListener("click", () => {
+      if (currentIndex < quizQuestions.length - 1) {
+        currentIndex++;
+        renderQuestion();
+      }
+    });
+
+    shuffleBtn.addEventListener("click", () => {
+      resetQuiz();
+    });
+
+    window.addEventListener("load", () => {
+      resetQuiz();
+    });
+  </script>
+</body>
+</html>
