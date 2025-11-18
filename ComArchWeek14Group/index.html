@@ -1,0 +1,275 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Exercise II – Memory Monitoring Lab</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg-layer"></div>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">IT</span>
+      <span class="brand-text">CS213 · Memory Lab</span>
+    </div>
+    <nav class="nav-links">
+      <a href="#overview">Activity</a>
+      <a href="#colab">Colab Code</a>
+      <a href="#simulation">Simulation</a>
+      <a href="#reference">Reference</a>
+    </nav>
+  </header>
+
+  <main class="page">
+    <section class="hero" id="overview">
+      <div class="hero-main">
+        <h1>Exercise II – Monitoring Memory Usage</h1>
+        <p class="hero-subtitle">
+          Design instructions and data to monitor memory usage as a program runs, then explore
+          how each step affects memory through an interactive simulation.
+        </p>
+        <div class="hero-tags">
+          <span class="tag">Python on Colab</span>
+          <span class="tag">Linux &amp; Shell tools</span>
+          <span class="tag">Memory Management</span>
+        </div>
+      </div>
+      <aside class="hero-aside">
+        <div class="hero-card">
+          <h2>Learning Goals</h2>
+          <ul>
+            <li>Define variables and data structures that consume memory.</li>
+            <li>Monitor memory usage using CLI tools on Linux.</li>
+            <li>Relate code steps to changes in the memory footprint.</li>
+            <li>Interpret a visual model of memory allocation and release.</li>
+          </ul>
+        </div>
+      </aside>
+    </section>
+
+    <section class="grid-two" id="colab">
+      <article class="card">
+        <h2>1 · Instructions &amp; Data in Python (Colab)</h2>
+        <p class="muted">
+          In Google Colab, create a short program that gradually increases and then releases its
+          memory usage. The example below follows the same phases as the simulation.
+        </p>
+<pre class="code"><code># Phase 1: program start (almost no allocations)
+import gc, psutil, os, numpy as np
+
+def show_process_memory(label):
+    rss = psutil.Process(os.getpid()).memory_info().rss / (1024 ** 2)
+    print(f"{label:20s} | memory = {rss:7.1f} MB")
+
+show_process_memory("start")
+
+# Phase 2: program code + small objects
+x = 42
+msg = "monitoring memory" * 1_000
+numbers = list(range(500_000))
+show_process_memory("after small data")
+
+# Phase 3: main processing array
+main_array = np.ones((4000, 3000), dtype=np.float64)
+show_process_memory("after main array")
+
+# Phase 4: temporary scratch space
+scratch = np.zeros((3000, 3000), dtype=np.float32)
+show_process_memory("after scratch")
+
+# Phase 5: free scratch, keep main data
+del scratch
+gc.collect()
+show_process_memory("after free scratch")
+
+# Phase 6: program finish, free almost everything
+del main_array, numbers, msg, x
+gc.collect()
+show_process_memory("after cleanup")</code></pre>
+        <p class="muted">
+          Each <code>show_process_memory</code> call is a measurement point that you can match
+          with the steps in the simulation.
+        </p>
+      </article>
+
+      <article class="card">
+        <h2>2 · Monitoring with Linux CLI</h2>
+        <p class="muted">
+          While the program is running, use Linux tools in the Colab terminal (or on your own
+          Linux environment) to monitor memory usage.
+        </p>
+
+        <div class="columns-2">
+          <div>
+            <h3>System-wide memory</h3>
+<pre class="code small"><code># human-readable total, used, free
+free -h
+
+# details of total / available memory
+grep MemTotal /proc/meminfo
+grep MemAvailable /proc/meminfo</code></pre>
+          </div>
+          <div>
+            <h3>Per-process memory</h3>
+<pre class="code small"><code># live process view
+top
+
+# restrict view to Python processes
+ps aux | grep python</code></pre>
+          </div>
+        </div>
+
+        <p class="muted">
+          Compare the CLI readings at each program phase with the conceptual memory shown
+          in the simulation panel.
+        </p>
+      </article>
+    </section>
+
+    <section class="grid-two" id="simulation">
+      <article class="card sim-card">
+        <header class="sim-header">
+          <div>
+            <h2>Interactive Memory Simulation</h2>
+            <p class="muted">
+              A conceptual 32-block memory model aligned with the phases of your Colab program.
+            </p>
+          </div>
+          <div class="pill-label">Live simulator</div>
+        </header>
+
+        <div class="sim-controls">
+          <div class="sim-controls-row">
+            <label class="slider-label">
+              <span class="label-text">Program step</span>
+              <input type="range" id="step-slider" min="0" max="6" value="0" />
+              <span id="step-number" class="slider-value">0</span>
+            </label>
+          </div>
+          <div class="sim-controls-row">
+            <button id="btn-prev">Previous</button>
+            <button id="btn-next">Next</button>
+            <button id="btn-play">Play sequence</button>
+            <button id="btn-pause">Pause</button>
+            <button id="btn-reset" class="ghost">Reset</button>
+          </div>
+        </div>
+
+        <div class="sim-layout">
+          <div class="sim-main">
+            <div class="step-header">
+              <div class="step-label">Current phase</div>
+              <div id="step-title" class="step-title">Step title</div>
+            </div>
+            <p id="step-desc" class="step-desc">
+              Description of what happens at this step will appear here.
+            </p>
+
+            <div class="metrics-row">
+              <div class="metric">
+                <div class="metric-label">Used blocks</div>
+                <div id="used-count" class="metric-value">0 / 32</div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">Phase type</div>
+                <div id="phase-type" class="metric-value secondary">Initialisation</div>
+              </div>
+            </div>
+
+            <div class="legend">
+              <div class="legend-item">
+                <span class="legend-swatch used"></span><span>Used block</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-swatch free"></span><span>Free block</span>
+              </div>
+            </div>
+
+            <div class="memory-grid-wrapper">
+              <h3>Conceptual memory blocks (32)</h3>
+              <p class="muted small">
+                Blocks 0–3 represent program code; later steps add an input buffer, main
+                processing array, and temporary scratch space. Watch how peak usage occurs
+                when all structures coexist.
+              </p>
+              <div id="memory-grid" class="memory-grid"></div>
+            </div>
+          </div>
+
+          <aside class="sim-aside">
+            <h3>Annotations</h3>
+            <p id="breakdown-text" class="muted small">
+              Detailed explanation of the current memory layout appears here.
+            </p>
+            <div class="annotation-card">
+              <h4>Colab link</h4>
+              <p class="muted small" id="colab-tip">
+                Tip text for connecting this phase to the Colab program.
+              </p>
+            </div>
+            <div class="annotation-card">
+              <h4>Monitoring insight</h4>
+              <p class="muted small" id="monitor-tip">
+                Insight on what you should see in <code>free -h</code> / <code>top</code> for this phase.
+              </p>
+            </div>
+          </aside>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>Usage Timeline</h2>
+        <p class="muted">
+          The chart below shows how many conceptual blocks are occupied at each program step.
+          The highlighted point corresponds to the current step in the simulator.
+        </p>
+        <div class="chart-shell">
+          <svg id="usage-chart" viewBox="0 0 380 200" preserveAspectRatio="xMidYMid meet"></svg>
+        </div>
+
+        <div class="reflection">
+          <h3>Questions to explore</h3>
+          <ul>
+            <li>At which step is memory usage highest, and why?</li>
+            <li>Which allocations are essential and which are temporary?</li>
+            <li>How would the curve change if you delayed freeing the scratch space?</li>
+            <li>What happens in a real system if peak usage exceeds available RAM?</li>
+          </ul>
+        </div>
+      </article>
+    </section>
+
+    <section class="grid-one" id="reference">
+      <article class="card">
+        <h2>Summary &amp; Reference Notes</h2>
+        <div class="columns-2">
+          <div>
+            <h3>Key concepts</h3>
+            <ul class="bullet">
+              <li><strong>Allocation</strong>: reserving memory for new data structures.</li>
+              <li><strong>Deallocation</strong>: releasing memory so it can be reused.</li>
+              <li><strong>Peak usage</strong>: the moment when most memory is in use.</li>
+              <li><strong>Monitoring</strong>: observing memory with tools and logs.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Connect to theory</h3>
+            <ul class="bullet">
+              <li>Relate these steps to logical address spaces and segments.</li>
+              <li>Discuss how paging or virtual memory would affect the picture.</li>
+              <li>Consider fragmentation when many temporary structures are used.</li>
+            </ul>
+          </div>
+        </div>
+        <p class="muted top-space">
+          Use this page together with the slide for Exercise II (page 44) and your own Colab
+          notebook as a complete mini-lab on memory management.
+        </p>
+      </article>
+    </section>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
