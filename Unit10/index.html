@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Linux Text Tools Practice Lab</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Linux Text Tools Practice Lab</h1>
+    <p>Practice sed, awk, grep, and more with an interactive terminal, quizzes, and a helpful hint-bot.</p>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab-button active" data-target="terminal-section">Terminal Quiz</button>
+    <button class="tab-button" data-target="mcq-section">MCQ Quiz (100 Questions)</button>
+    <button class="tab-button" data-target="chatbot-section">Hint Chatbot</button>
+  </nav>
+
+  <main>
+    <!-- Terminal Quiz Section -->
+    <section id="terminal-section" class="tab-section active">
+      <h2>Terminal Command Challenge</h2>
+      <p class="section-intro">
+        You will get small Linux shell tasks. Type the exact command you would use in a real terminal.
+        The simulator only checks your command text; it does not run real commands.
+      </p>
+
+      <div id="terminal-quiz">
+        <div id="task-box">
+          <h3>Current Task</h3>
+          <p id="task-text"></p>
+          <p id="task-progress"></p>
+        </div>
+
+        <div id="terminal-window">
+          <div id="terminal-output" aria-live="polite"></div>
+          <div class="terminal-input-row">
+            <span class="prompt">student@linux:~$</span>
+            <input id="terminal-input" type="text" autocomplete="off" />
+          </div>
+          <button id="submit-command">Run Command</button>
+          <button id="skip-command" class="secondary">Skip Task</button>
+        </div>
+
+        <p id="terminal-feedback" class="feedback"></p>
+      </div>
+    </section>
+
+    <!-- MCQ Section -->
+    <section id="mcq-section" class="tab-section">
+      <h2>Multiple Choice Quiz</h2>
+      <p class="section-intro">
+        Answer 100 unique questions about Linux text tools and shell basics. Your score updates as you go.
+      </p>
+
+      <div id="mcq-quiz">
+        <div id="mcq-meta">
+          <span id="mcq-counter"></span>
+          <span id="mcq-score"></span>
+        </div>
+        <h3 id="mcq-question"></h3>
+        <ul id="mcq-options"></ul>
+        <p id="mcq-feedback" class="feedback"></p>
+        <div class="mcq-actions">
+          <button id="next-question">Next Question</button>
+          <button id="restart-quiz" class="secondary">Restart Quiz</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chatbot Section -->
+    <section id="chatbot-section" class="tab-section">
+      <h2>Hint Chatbot</h2>
+      <p class="section-intro">
+        Ask for help about a question or command. The bot will only give you <strong>hints</strong> &mdash;
+        not full answers or exact commands.
+      </p>
+
+      <div id="chatbot">
+        <div id="chat-window" aria-live="polite">
+          <div class="bot message">
+            <p><strong>Bot:</strong> Hi! Tell me what you are stuck on &mdash; an MCQ like Q9 or a terminal task like T3 &mdash; and I will nudge you in the right direction without giving the full answer.</p>
+          </div>
+        </div>
+        <div class="chat-input-row">
+          <input id="chat-input" type="text" placeholder="Example: 'hint for Q9', 'stuck on task 3', 'how to use sed to replace?'" autocomplete="off" />
+          <button id="chat-send">Send</button>
+        </div>
+        <p class="hint-note">
+          The bot is intentionally vague so that <strong>you</strong> still solve the problem yourself.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Linux Text Tools Practice Lab &mdash; client-side only, safe for experimentation.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
